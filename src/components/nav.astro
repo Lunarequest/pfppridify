@@ -1,0 +1,128 @@
+---
+import { Image } from "@astrojs/image/components";
+import logo from "../images/rainbow.png";
+---
+
+<nav class="bg-slate-100 dark:bg-teal-950">
+    <div class="container flex flex-wrap items-center justify-between mx-auto">
+        <a href="/" class="flex items-center">
+            <Image
+                src={logo}
+                width={50}
+                height={35}
+                alt="the rainbow pride flag"
+            />
+            <span
+                class="self-center text-xl font-semibold whitespace-nowrap text-black dark:text-white"
+                >&nbspPridify</span
+            >
+        </a>
+        <button
+            data-collapse-toggle="navbar-default"
+            type="button"
+            id="menu-button"
+            class="inline-flex items-center p-2 ml-3 text-sm text-black:500 dark:text-white-500 rounded-lg md:hidden hover:bg-black-100 focus:outline-none focus:ring-2 focus:ring-black-200 dark:text-white-400 dark:hover:bg-black-700 dark:focus:ring-black-600"
+            aria-controls="navbar-default"
+            aria-expanded="false"
+        >
+            <span class="sr-only">Open main menu</span>
+            <svg
+                class="w-6 h-6"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    fill-rule="evenodd"
+                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button>
+        <div class="hidden w-full md:block md:w-auto" id="menu">
+            <ul
+                class="flex flex-col p-4 mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0"
+            >
+                <li>
+                    <button id="themeToggle">
+                        <svg
+                            width="30px"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                class="sun"
+                                fill-rule="evenodd"
+                                d="M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zm0 1.5a7 7 0 1 0 0-14 7 7 0 0 0 0 14zm12-7a.8.8 0 0 1-.8.8h-2.4a.8.8 0 0 1 0-1.6h2.4a.8.8 0 0 1 .8.8zM4 12a.8.8 0 0 1-.8.8H.8a.8.8 0 0 1 0-1.6h2.5a.8.8 0 0 1 .8.8zm16.5-8.5a.8.8 0 0 1 0 1l-1.8 1.8a.8.8 0 0 1-1-1l1.7-1.8a.8.8 0 0 1 1 0zM6.3 17.7a.8.8 0 0 1 0 1l-1.7 1.8a.8.8 0 1 1-1-1l1.7-1.8a.8.8 0 0 1 1 0zM12 0a.8.8 0 0 1 .8.8v2.5a.8.8 0 0 1-1.6 0V.8A.8.8 0 0 1 12 0zm0 20a.8.8 0 0 1 .8.8v2.4a.8.8 0 0 1-1.6 0v-2.4a.8.8 0 0 1 .8-.8zM3.5 3.5a.8.8 0 0 1 1 0l1.8 1.8a.8.8 0 1 1-1 1L3.5 4.6a.8.8 0 0 1 0-1zm14.2 14.2a.8.8 0 0 1 1 0l1.8 1.7a.8.8 0 0 1-1 1l-1.8-1.7a.8.8 0 0 1 0-1z"
+                            ></path>
+                            <path
+                                class="moon"
+                                fill-rule="evenodd"
+                                d="M16.5 6A10.5 10.5 0 0 1 4.7 16.4 8.5 8.5 0 1 0 16.4 4.7l.1 1.3zm-1.7-2a9 9 0 0 1 .2 2 9 9 0 0 1-11 8.8 9.4 9.4 0 0 1-.8-.3c-.4 0-.8.3-.7.7a10 10 0 0 0 .3.8 10 10 0 0 0 9.2 6 10 10 0 0 0 4-19.2 9.7 9.7 0 0 0-.9-.3c-.3-.1-.7.3-.6.7a9 9 0 0 1 .3.8z"
+                            ></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    #themeToggle {
+        border: 0;
+        background: none;
+    }
+    .sun {
+        fill: transparent;
+    }
+    .moon {
+        fill: black;
+    }
+
+    :global(.dark) .sun {
+        fill: white;
+    }
+    :global(.dark) .moon {
+        fill: transparent;
+    }
+</style>
+
+<script>
+    const menu = document.getElementById("menu");
+    const button = document.getElementById("menu-button");
+    const themeToggle = document.getElementById("themeToggle");
+
+    function setTheme(mode: string): void {
+        if (mode === "dark") {
+            document.documentElement.classList.add("dark");
+        } else if (mode === "light") {
+            document.documentElement.classList.remove("dark");
+        }
+        localStorage.setItem("theme", mode);
+    }
+
+    if (localStorage.theme === "dark" || !(localStorage.getItem('theme')) && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTheme('dark');
+    }else{
+        setTheme('light');
+    }
+
+    button?.addEventListener("click", () => {
+        if (menu != null) {
+            menu.classList.toggle("hidden");
+        }
+    });
+
+    themeToggle?.addEventListener("click", () => {
+        if (
+            localStorage.theme === "dark" ||
+            (!("theme" in localStorage) &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+            setTheme('light')
+        } else {
+            setTheme('dark')
+        }
+    });
+</script>
