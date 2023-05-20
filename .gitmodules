@@ -1,0 +1,3 @@
+[submodule "libs/pridify"]
+	path = libs/pridify
+	url = https://github.com/Lunarequest/pridify

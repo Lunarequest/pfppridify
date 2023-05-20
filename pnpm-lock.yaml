@@ -22,6 +22,9 @@ dependencies:
   cropperjs:
     specifier: ^1.5.13
     version: 1.5.13
+  pridify:
+    specifier: link:libs/pridify/pkg
+    version: link:libs/pridify/pkg
   react:
     specifier: ^18.0.0
     version: 18.2.0
