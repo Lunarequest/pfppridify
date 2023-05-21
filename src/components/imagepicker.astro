@@ -12,8 +12,13 @@
         <div id="style-region"></div>
     </div>
     <div>
+        <div id="cropper-container">
+            <img id="cropper-image" src="" alt="Crop Image" />
+        </div>
         <button id="crop-button" disabled></button>
     </div>
+
+    <div></div>
 </div>
 
 <style>
@@ -55,15 +60,26 @@
 </style>
 
 <script>
-    let imageData: File;
+    import Cropper from "cropperjs";
+    import { girls } from "pridify";
+    let imageData: File | undefined = undefined;
+    
+    async function buildimage(flag: string, type: string): Promise<Blob|undefined> {
+        if (imageData) {
+        let pfp_bytes = new Uint8Array(await imageData.arrayBuffer());
+        let file = girls(pfp_bytes, flag);
+        let blob = new Blob([file], {type: type});
+        return blob;
+        }
+        return undefined;
+    }
+
     let // where files are dropped + file selector is opened
         dropRegion = document.getElementById("drop-region"),
         // where images are previewed
         imagePreviewRegion = document.getElementById("image-preview"),
         //preview button
         cropButton = document.getElementById("crop-button");
-        ;
-
     // open file selector when clicked on the drop region
     let fakeInput = document.createElement("input");
     fakeInput.type = "file";
@@ -128,6 +144,7 @@
         if (imagePreviewRegion?.hasChildNodes()) {
             imagePreviewRegion.removeChild(imagePreviewRegion.firstChild!);
         }
+
         // container
         let imgView = document.createElement("div");
         imgView.className = "image-view";
@@ -146,11 +163,41 @@
         let reader = new FileReader();
         reader.onload = function (e) {
             img.src = e.target?.result as string;
+
+            // Initialize the cropper
+            var cropper = new Cropper(img, {
+                aspectRatio: NaN, // Set the aspect ratio based on your requirements
+                viewMode: 1, // Set the cropping mode (0, 1, 2, 3)
+                minCropBoxWidth: 300, // Set the minimum width of the crop box
+                minCropBoxHeight: 300, // Set the minimum height of the crop box
+                maxCropBoxWidth: 400, // Set the maximum width of the crop box
+                maxCropBoxHeight: 400, // Set the maximum height of the crop box
+                ready: function () {
+                    // Enable the crop button once the cropper is ready
+                    cropButton?.removeAttribute("disabled");
+                },
+            });
+
+            // Save the cropper instance for later use
+            img.dataset.cropper = JSON.stringify(cropper);
         };
         reader.readAsDataURL(image);
 
-        cropButton?.removeAttribute("disabled");
         // create FormData
         imageData = image;
     }
+    cropButton?.addEventListener("click", function () {
+        // Get the cropped image data
+        var img = document.getElementById("cropper-image") as HTMLImageElement;
+        var cropper = JSON.parse(img.dataset.cropper as string);
+        var croppedImageData = cropper
+            .getCroppedCanvas()
+            .toDataURL("image/png");
+
+        // Do something with the cropped image data, like uploading it to a server
+
+        // Example: Open the cropped image in a new window
+        var croppedImage = window.open();
+        croppedImage?.document.write('<img src="' + croppedImageData + '">');
+    });
 </script>
